@@ -1,0 +1,46 @@
+pipeline {
+    agent any  // Utiliza cualquier agente disponible
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clona el repositorio
+                git 'https://github.com/tu_usuario/tu_repositorio.git'  // Cambia esto a tu URL de GitHub
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Instala las dependencias de la aplicación
+                script {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Construye la aplicación
+                script {
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                // Archiva los artefactos generados
+                archiveArtifacts artifacts: 'build/**/*', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
